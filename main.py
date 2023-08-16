@@ -1,16 +1,28 @@
-# This is a sample Python script.
+import os
+from dotenv import load_dotenv, find_dotenv
 
-# Press Shift+F10 to execute it or replace it with your code.
-# Press Double Shift to search everywhere for classes, files, tool windows, actions, and settings.
-
-
-def print_hi(name):
-    # Use a breakpoint in the code line below to debug your script.
-    print(f'Hi, {name}')  # Press Ctrl+F8 to toggle the breakpoint.
+load_dotenv(find_dotenv(), override=True)
 
 
-# Press the green button in the gutter to run the script.
-if __name__ == '__main__':
-    print_hi('PyCharm')
+def load_document(file):
+    import os
+    name, extension = os.path.splitext(file)
 
-# See PyCharm help at https://www.jetbrains.com/help/pycharm/
+    print(f'Loading {file}')
+    if extension == '.pdf':
+        from langchain.document_loaders import PyPDFLoader
+        loader = PyPDFLoader(file)
+    elif extension == '.docx':
+        from langchain.document_loaders import Docx2txtLoader
+        loader = Docx2txtLoader(file)
+    else:
+        print('Document format is not supported!')
+        return None
+
+    data = loader.load()
+    print(f'Total {len(data)} pages are loaded.')
+
+    return data
+
+# data = load_document('https://arxiv.org/pdf/1706.03762.pdf')
+# print(data[1].page_content)
